@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Earth Jukebox - Color Analyzer</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <main class="app-shell">
+        <header class="topbar">
+            <div class="brand-mark" aria-hidden="true">&#9673;</div>
+            <div>
+                <p class="eyebrow">EARTH JUKEBOX / VISUAL LAB</p>
+                <h1>Pixel Analyzer</h1>
+            </div>
+            <span class="live-status"><span></span> Ready to scan</span>
+        </header>
+
+        <section class="intro" aria-labelledby="page-title">
+            <p class="section-label">01 / UPLOAD A SPECIMEN</p>
+            <h2 id="page-title">Find the colors hiding<br><em>in plain sight.</em></h2>
+            <p class="intro-copy">Drop an image into the lab and map its most common hues. Your canvas will appear below for inspection.</p>
+        </section>
+
+        <section class="workspace" aria-label="Image color analyzer">
+            <label class="upload-panel" for="imageInput">
+                <span class="upload-icon" aria-hidden="true">&uarr;</span>
+                <span class="upload-title">Choose an image</span>
+                <span class="upload-hint">JPG, PNG, GIF or WEBP &middot; any size</span>
+                <span class="upload-button">Browse files <span aria-hidden="true">&rarr;</span></span>
+                <input id="imageInput" type="file" accept="image/*">
+            </label>
+
+            <div class="canvas-panel">
+                <div class="panel-heading">
+                    <span>IMAGE PREVIEW</span>
+                    <span class="panel-meta">LIVE CANVAS</span>
+                </div>
+                <div class="canvas-stage">
+                    <canvas id="myCanvas"></canvas>
+                    <p class="empty-state">Your image will appear here</p>
+                </div>
+            </div>
+        </section>
+
+        <footer class="footer-note">HUE FREQUENCY ANALYSIS <span></span> BUILT FOR EARTH JUKEBOX</footer>
+    </main>
+    <script src="script.js"></script>
+</body>
+</html>
