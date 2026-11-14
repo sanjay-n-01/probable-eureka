@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Earth Jukebox - Color Analyzer</title>
+    <link rel="stylesheet" href="style.css">
+    
+</head>
+<body>
+    <main class="app-shell">
+        <header class="topbar">
+            <div class="brand-mark" aria-hidden="true">&#9673;</div>
+            <div>
+                <p class="eyebrow">EARTH JUKEBOX / VISUAL LAB</p>
+                <h1>Pixel Analyzer</h1>
+            </div>
+            <span class="live-status"><span></span> Ready to scan</span>
+        </header>
+
+        <section class="intro" aria-labelledby="page-title">
+            <p class="section-label">01 / UPLOAD A SPECIMEN</p>
+            <h2 id="page-title">Find the colors hiding<br><em>in plain sight.</em></h2>
+            <p class="intro-copy">Drop an image into the lab and map its most common hues. Your canvas will appear below for inspection.</p>
+        </section>
+
+        <section class="workspace" aria-label="Image color analyzer">
+            <div class="upload-panel" onclick="document.getElementById('imageInput').click()">
+                <span class="upload-icon" aria-hidden="true">&uarr;</span>
+                <span class="upload-title">Choose an image</span>
+                <span class="upload-hint">JPG, PNG, GIF or WEBP &middot; any size</span>
+                <span class="upload-button">Browse files <span aria-hidden="true">&rarr;</span></span>
+                <input id="imageInput" type="file" accept="image/*">
+            </div>
+
+            <div class="canvas-panel">
+                <div class="panel-heading">
+                    <span>IMAGE PREVIEW</span>
+                    <span class="panel-meta">LIVE CANVAS</span>
+                </div>
+                <div class="canvas-stage">
+                    <canvas id="myCanvas"></canvas>
+                    <p class="empty-state">Your image will appear here</p>
+                </div>
+            </div>
+        </section>
+        <section class="audio-panel" id="audioPanel" style="display:none; margin-top:24px; padding:24px; border:1px solid rgba(233,238,232,0.14); background:rgba(21,26,24,0.72);">
+            <p class="eyebrow">02 / LISTEN TO EARTH</p>
+            <p class="section-label" id="scanStatus">Ready to scan</p>
+            <div style="display:flex; gap:12px; margin-top:16px;">
+                <button id="playBtn" style="padding:12px 24px; background:var(--acid); color:#141810; font-weight:700; border:none; cursor:pointer;">PLAY</button>
+                <button id="pauseBtn" style="padding:12px 24px; background:transparent; color:var(--acid); border:1px solid var(--acid); cursor:pointer;" disabled>PAUSE</button>
+                <button id="stopBtn" style="padding:12px 24px; background:transparent; color:var(--muted); border:1px solid var(--line); cursor:pointer;" disabled>STOP</button>
+            </div>
+        </section>
+
+        <footer class="footer-note">HUE FREQUENCY ANALYSIS <span></span> BUILT FOR EARTH JUKEBOX</footer>
+    </main>
+    <script src="script_fixed.js"></script>
+</body>
+</html>
