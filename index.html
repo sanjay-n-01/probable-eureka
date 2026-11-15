@@ -3,59 +3,316 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Earth Jukebox - Color Analyzer</title>
-    <link rel="stylesheet" href="style.css">
-    
+    <title>Earth Jukebox — Real-Time NASA EIC Video Sonification</title>
+    <link href="https://fonts.googleapis.com/css2?family=DM+Mono:wght@400;500&family=Space+Grotesk:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --ink: #e9eee8;
+            --muted: #9aa79e;
+            --line: rgba(233, 238, 232, 0.18);
+            --acid: #d7f36b;
+            --panel: #141a17;
+            --background: #0a0e0d;
+        }
+        * { box-sizing: border-box; }
+        body {
+            margin: 0;
+            min-height: 100vh;
+            background: radial-gradient(circle at 80% 15%, rgba(116, 144, 71, 0.15), transparent 30%), #0a0e0d;
+            color: var(--ink);
+            font-family: 'Space Grotesk', sans-serif;
+        }
+        .app-shell {
+            width: min(1180px, calc(100% - 36px));
+            margin: 0 auto;
+            padding: 22px 0 40px;
+        }
+        .topbar {
+            display: flex;
+            align-items: center;
+            gap: 14px;
+            padding-bottom: 16px;
+            border-bottom: 1px solid var(--line);
+            flex-wrap: wrap;
+        }
+        .brand-mark {
+            width: 38px;
+            height: 38px;
+            border: 1px solid var(--acid);
+            border-radius: 50%;
+            display: grid;
+            place-items: center;
+            color: var(--acid);
+            font-size: 18px;
+        }
+        .eyebrow, .section-label, .pill-btn {
+            font-family: 'DM Mono', monospace;
+            letter-spacing: 0.08em;
+            text-transform: uppercase;
+        }
+        .eyebrow { margin: 0 0 4px; color: var(--acid); font-size: 11px; }
+        h1 { margin: 0; font-size: 20px; font-weight: 600; }
+        .top-actions {
+            margin-left: auto;
+            display: flex;
+            gap: 8px;
+            flex-wrap: wrap;
+        }
+        .pill-btn {
+            background: #141a17;
+            color: var(--ink);
+            border: 1px solid var(--line);
+            padding: 8px 14px;
+            font-size: 11px;
+            cursor: pointer;
+            transition: 0.15s;
+        }
+        .pill-btn:hover, .pill-btn.active {
+            border-color: var(--acid);
+            background: var(--acid);
+            color: #0a0e0d;
+            font-weight: 700;
+        }
+
+        .jukebox-console {
+            background: rgba(20, 26, 23, 0.94);
+            border: 1px solid var(--line);
+            padding: 20px;
+            margin-top: 16px;
+        }
+        .section-label {
+            margin: 0 0 10px;
+            color: var(--acid);
+            font-size: 11px;
+        }
+        .track-list {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+            gap: 10px;
+            margin-bottom: 16px;
+        }
+        .track-btn {
+            background: #0e1311;
+            border: 1px solid var(--line);
+            color: var(--ink);
+            padding: 12px;
+            text-align: left;
+            font-family: 'DM Mono', monospace;
+            font-size: 11px;
+            cursor: pointer;
+            transition: 0.15s;
+            line-height: 1.4;
+        }
+        .track-btn:hover, .track-btn.active {
+            border-color: var(--acid);
+            color: var(--acid);
+            background: rgba(215, 243, 107, 0.08);
+        }
+        .track-btn kbd {
+            background: var(--acid);
+            color: #0a0e0d;
+            padding: 2px 6px;
+            margin-right: 6px;
+            font-weight: 700;
+        }
+
+        /* VIDEO TRANSPORT & 900-FRAME SCRUBBER */
+        .transport-bar {
+            background: #0d1210;
+            border: 1px solid var(--line);
+            padding: 12px 16px;
+            margin-bottom: 16px;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            flex-wrap: wrap;
+        }
+        .timeline-slider {
+            flex: 1;
+            min-width: 200px;
+            accent-color: var(--acid);
+            cursor: pointer;
+        }
+        .frame-badge {
+            font-family: 'DM Mono', monospace;
+            font-size: 11px;
+            color: var(--acid);
+            min-width: 195px;
+            text-align: right;
+        }
+
+        .map-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 10px;
+            margin-bottom: 8px;
+        }
+        .help-text {
+            font-family: 'DM Mono', monospace;
+            font-size: 11px;
+            color: var(--muted);
+            margin: 0;
+        }
+        .help-text strong { color: var(--ink); }
+
+        /* LIVE VIDEO STAGE + 16x24 HIGH-RES GRID OVERLAY */
+        .video-stage {
+            position: relative;
+            width: 100%;
+            aspect-ratio: 2 / 1;
+            max-height: 500px;
+            background: #044a75;
+            border: 1px solid var(--line);
+            overflow: hidden;
+        }
+        #eicVideo {
+            width: 100%;
+            height: 100%;
+            object-fit: fill;
+            display: block;
+        }
+        .explorer-grid {
+            position: absolute;
+            inset: 0;
+            display: grid;
+            grid-template-columns: repeat(24, 1fr);
+            grid-template-rows: repeat(16, 1fr);
+        }
+        .grid-cell {
+            border: 1px solid rgba(255, 255, 255, 0.06);
+            cursor: crosshair;
+            transition: background 0.06s;
+        }
+        .grid-cell:hover {
+            background: rgba(215, 243, 107, 0.2);
+        }
+        .grid-cell.active {
+            background: rgba(215, 243, 107, 0.28);
+            border: 2px solid var(--acid);
+            box-shadow: 0 0 14px rgba(215, 243, 107, 0.9);
+            z-index: 2;
+        }
+
+        .telemetry-cards {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(175px, 1fr));
+            gap: 10px;
+            margin-top: 14px;
+        }
+        .t-card {
+            background: #0d1210;
+            border: 1px solid var(--line);
+            padding: 11px;
+            font-family: 'DM Mono', monospace;
+        }
+        .t-label { font-size: 10px; color: var(--muted); margin-bottom: 4px; }
+        .t-value { font-size: 13px; color: var(--acid); font-weight: 600; }
+
+        #status-readout {
+            margin-top: 14px;
+            padding: 14px;
+            background: #0d1210;
+            border-left: 3px solid var(--acid);
+            font-family: 'DM Mono', monospace;
+            color: var(--ink);
+            font-size: 12px;
+            line-height: 1.5;
+        }
+    </style>
 </head>
 <body>
     <main class="app-shell">
         <header class="topbar">
             <div class="brand-mark" aria-hidden="true">&#9673;</div>
             <div>
-                <p class="eyebrow">EARTH JUKEBOX / VISUAL LAB</p>
-                <h1>Pixel Analyzer</h1>
+                <p class="eyebrow">NASA EIC SVS 5544 / REAL-TIME VIDEO SONIFICATION JUKEBOX</p>
+                <h1>Listen to 900 daily frames of Earth in real time.</h1>
             </div>
-            <span class="live-status"><span></span> Ready to scan</span>
+            <div class="top-actions">
+                <label class="pill-btn">
+                    &#128194; LOAD SVS 5544 .MP4
+                    <input type="file" id="videoFileInput" accept="video/mp4,video/webm,video/*" style="display:none;">
+                </label>
+                <button class="pill-btn" id="btn-mute-speech" onclick="toggleSpeech()">&#128266; VOICE: ON</button>
+                <button class="pill-btn" onclick="stopAll()">&#9632; STOP</button>
+            </div>
         </header>
 
-        <section class="intro" aria-labelledby="page-title">
-            <p class="section-label">01 / UPLOAD A SPECIMEN</p>
-            <h2 id="page-title">Find the colors hiding<br><em>in plain sight.</em></h2>
-            <p class="intro-copy">Drop an image into the lab and map its most common hues. Your canvas will appear below for inspection.</p>
-        </section>
-
-        <section class="workspace" aria-label="Image color analyzer">
-            <div class="upload-panel" onclick="document.getElementById('imageInput').click()">
-                <span class="upload-icon" aria-hidden="true">&uarr;</span>
-                <span class="upload-title">Choose an image</span>
-                <span class="upload-hint">JPG, PNG, GIF or WEBP &middot; any size</span>
-                <span class="upload-button">Browse files <span aria-hidden="true">&rarr;</span></span>
-                <input id="imageInput" type="file" accept="image/*">
+        <section class="jukebox-console">
+            <p class="section-label">01 / CURATED LIVE VIDEO JUKEBOX TRACKS (PRESS 1–4 OR CLICK)</p>
+            <div class="track-list">
+                <button class="track-btn" id="btn-track-1" onclick="startJukeboxTrack(1)">
+                    <kbd>1</kbd> <strong>Boreal Snowline &amp; Forest Pulse</strong><br>
+                    <span style="color:var(--muted); font-size:10px;">Locks Sonic Lens onto 60&deg;N Siberia/Canada as the 900-frame movie plays</span>
+                </button>
+                <button class="track-btn" id="btn-track-2" onclick="startJukeboxTrack(2)">
+                    <kbd>2</kbd> <strong>Indian Monsoon &amp; Crop Cycle</strong><br>
+                    <span style="color:var(--muted); font-size:10px;">Tracks Peninsular India (75&deg;E, 18&deg;N) across 2.5 years of monsoon greening</span>
+                </button>
+                <button class="track-btn" id="btn-track-3" onclick="startJukeboxTrack(3)">
+                    <kbd>3</kbd> <strong>Sahel Greening Wave (Africa)</strong><br>
+                    <span style="color:var(--muted); font-size:10px;">Locks onto the Sahara–Sahel boundary (15&deg;E, 14&deg;N) as rain belts shift</span>
+                </button>
+                <button class="track-btn" id="btn-track-4" onclick="startJukeboxTrack(4)">
+                    <kbd>4</kbd> <strong>Global Latitude Patrol</strong><br>
+                    <span style="color:var(--muted); font-size:10px;">Automatically walks the cursor across continents while the video rolls</span>
+                </button>
             </div>
 
-            <div class="canvas-panel">
-                <div class="panel-heading">
-                    <span>IMAGE PREVIEW</span>
-                    <span class="panel-meta">LIVE CANVAS</span>
+            <!-- VIDEO TRANSPORT CONTROLS -->
+            <div class="transport-bar">
+                <button class="pill-btn active" id="playPauseBtn" onclick="togglePlayPause()">&#9654; PLAY LIVE VIDEO + SYNTH</button>
+                <button class="pill-btn" onclick="stepFrames(-15)">&laquo; -15 FRAMES</button>
+                <button class="pill-btn" onclick="stepFrames(15)">+15 FRAMES &raquo;</button>
+                <input type="range" id="videoScrubber" class="timeline-slider" min="0" max="899" step="1" value="0" aria-label="900 Frame Video Timeline">
+                <div class="frame-badge" id="frameBadge">FRAME 001 / 900</div>
+            </div>
+
+            <div class="map-header">
+                <p class="section-label" style="margin:0;">02 / TACTILE SONIC LENS (16&times;24 FINE GRID = 384 CELLS)</p>
+                <p class="help-text">
+                    <strong>Arrow Keys / Click</strong>: Move fine scan cell while video plays &nbsp;|&nbsp;
+                    <strong>Spacebar</strong>: Play / Pause Video &nbsp;|&nbsp;
+                    <strong>[ / ]</strong>: Scrub Time
+                </p>
+            </div>
+
+            <!-- LIVE HTML5 VIDEO + 16x24 INTERACTIVE GRID OVERLAY -->
+            <div class="video-stage">
+                <video id="eicVideo" loop muted playsinline crossorigin="anonymous"></video>
+                <div class="explorer-grid" id="map-grid" role="grid" aria-label="16 by 24 High Resolution Video Grid"></div>
+            </div>
+
+            <!-- REAL-TIME PIXEL TELEMETRY EXTRACTED AT 30 FPS FROM THE VIDEO -->
+            <div class="telemetry-cards">
+                <div class="t-card">
+                    <div class="t-label">SONIC LENS LOCATION (16&times;24)</div>
+                    <div class="t-value" id="t-region">75°E India · 11°N–22°N</div>
                 </div>
-                <div class="canvas-stage">
-                    <canvas id="myCanvas"></canvas>
-                    <p class="empty-state">Your image will appear here</p>
+                <div class="t-card">
+                    <div class="t-label">LIVE VIDEO FRAME</div>
+                    <div class="t-value" id="t-frame">FRAME 001 / 900</div>
+                </div>
+                <div class="t-card">
+                    <div class="t-label">DETECTED BIOME (REAL-TIME)</div>
+                    <div class="t-value" id="t-biome">--</div>
+                </div>
+                <div class="t-card">
+                    <div class="t-label">NDVI / SNOW INTENSITY</div>
+                    <div class="t-value" id="t-ndvi">--</div>
+                </div>
+                <div class="t-card">
+                    <div class="t-label">LIVE SYNTH FREQUENCY</div>
+                    <div class="t-value" id="t-freq">-- Hz</div>
                 </div>
             </div>
-        </section>
-        <section class="audio-panel" id="audioPanel" style="display:none; margin-top:24px; padding:24px; border:1px solid rgba(233,238,232,0.14); background:rgba(21,26,24,0.72);">
-            <p class="eyebrow">02 / LISTEN TO EARTH</p>
-            <p class="section-label" id="scanStatus">Ready to scan</p>
-            <div style="display:flex; gap:12px; margin-top:16px;">
-                <button id="playBtn" style="padding:12px 24px; background:var(--acid); color:#141810; font-weight:700; border:none; cursor:pointer;">PLAY</button>
-                <button id="pauseBtn" style="padding:12px 24px; background:transparent; color:var(--acid); border:1px solid var(--acid); cursor:pointer;" disabled>PAUSE</button>
-                <button id="stopBtn" style="padding:12px 24px; background:transparent; color:var(--muted); border:1px solid var(--line); cursor:pointer;" disabled>STOP</button>
-            </div>
-        </section>
 
-        <footer class="footer-note">HUE FREQUENCY ANALYSIS <span></span> BUILT FOR EARTH JUKEBOX</footer>
+            <div id="status-readout" aria-live="polite">Initializing NASA SVS 5544 Video Sonification Engine...</div>
+        </section>
     </main>
-    <script src="script_fixed.js"></script>
+
+    <script src="jukebox.js"></script>
 </body>
 </html>
