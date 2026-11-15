@@ -1,12 +1,12 @@
-# 🌍 Earth Jukebox — Blind-Accessible Real-Time Video Sonification of NASA EIC Data
+# Earth Jukebox — Blind-Accessible Real-Time Video Sonification of NASA EIC Data
 
 **2026 NASA Space Apps Challenge Submission | Team SSS**  
-🔗 **Live Web Application:** [https://sanjay-n-01.github.io/probable-eureka/](https://sanjay-n-01.github.io/probable-eureka/)  
-🛰️ **Primary Dataset:** [NASA Scientific Visualization Studio (SVS) #5544 — Near Real-Time Global NDVI (Suomi-NPP / NOAA-20 VIIRS)](https://svs.gsfc.nasa.gov/5544/)
+ **Live Web Application:** [https://sanjay-n-01.github.io/probable-eureka/](https://sanjay-n-01.github.io/probable-eureka/)  
+ **Primary Dataset:** [NASA Scientific Visualization Studio (SVS) #5544 — Near Real-Time Global NDVI (Suomi-NPP / NOAA-20 VIIRS)](https://svs.gsfc.nasa.gov/5544/)
 
 ---
 
-## 🎯 Overview & Problem Statement
+## Overview & Problem Statement
 NASA’s Earth Information Center (EIC) captures extraordinary planetary changes—such as **SVS 5544**, a 900-frame rolling daily time-series (`nrt_ndvi_equi_w_dates_2048p30.mp4`) tracking global vegetation (NDVI) and snow cover from December 27, 2023 to June 6, 2026. However, presenting complex Earth science exclusively as silent video locks out **blind and low-vision (BLV)** users and makes subtle seasonal and multi-year shifts difficult to track.
 
 Legacy sonification scripts convert static 1D/2D data tables into disconnected pitch sweeps that fail on rendered EIC hyperwall animations, conflate clouds/ice/oceans with land, and cause listener fatigue.
@@ -15,7 +15,7 @@ Legacy sonification scripts convert static 1D/2D data tables into disconnected p
 
 ---
 
-## ✨ Key Features
+## Key Features:
 
 ### 1. Curated Live Video Jukebox Stories (Keys `1`–`4`)
 Pressing `1` through `4` locks a high-resolution **Sonic Lens** onto key ecological regions while the 900-frame NASA movie rolls at 30 FPS:
@@ -30,10 +30,10 @@ Pressing `1` through `4` locks a high-resolution **Sonic Lens** onto key ecologi
 
 ### 3. Continuous Tri-Biome Web Audio Synthesizer
 Instead of choppy per-frame clicks, persistent Web Audio API oscillators smoothly glide via `40ms` exponential time constants (`setTargetAtTime`):
-* **🌿 Vegetation Canopy:** Quantized to a 3-octave **C-Major Pentatonic Scale (`C3`–`C6`, MIDI `48`–`84`)**. Dense canopy coverage (`NDVI >= 0.55`) opens a Biquad low-pass filter (`450 Hz` $\to$ `2850 Hz`) and blends in a Perfect Fifth harmonic (`1.5×` root frequency).
-* **❄️ Cryosphere (Snow & Ice):** Triggers high-register crystalline bell intervals (`G5 + D6` sine shimmer at `2800 Hz`).
-* **🌊 Ocean Basins:** Produces a subtle `65.4 Hz (C2)` sub-bass tide pulse low-pass filtered at `180 Hz`.
-* **🎧 3D Longitudinal Stereo Panning:** Maps longitude (`180°W` to `180°E`) across a `StereoPannerNode` (`-1.0` Left Ear to `+1.0` Right Ear).
+* ** Vegetation Canopy:** Quantized to a 3-octave **C-Major Pentatonic Scale (`C3`–`C6`, MIDI `48`–`84`)**. Dense canopy coverage (`NDVI >= 0.55`) opens a Biquad low-pass filter (`450 Hz` $\to$ `2850 Hz`) and blends in a Perfect Fifth harmonic (`1.5×` root frequency).
+* ** Cryosphere (Snow & Ice):** Triggers high-register crystalline bell intervals (`G5 + D6` sine shimmer at `2800 Hz`).
+* ** Ocean Basins:** Produces a subtle `65.4 Hz (C2)` sub-bass tide pulse low-pass filtered at `180 Hz`.
+* ** 3D Longitudinal Stereo Panning:** Maps longitude (`180°W` to `180°E`) across a `StereoPannerNode` (`-1.0` Left Ear to `+1.0` Right Ear).
 
 ### 4. Blind-First WAI-ARIA Accessibility
 * Full `role="grid"`, `role="gridcell"`, `aria-selected`, `aria-activedescendant`, and `aria-live="polite"` support for **NVDA** and **JAWS** screen readers.
@@ -53,7 +53,7 @@ Instead of choppy per-frame clicks, persistent Web Audio API oscillators smoothl
 
 ---
 
-## 👥 Contributors
+## Contributors:
 
 * **Sanjay N** and **Mathesh M**  — Color and pixel analysis and conversion of the analysis into the NDVI pipeline.
 * **Sanjay Eshwaran P** and **Sunanda V K** — Designed and implemented the sonification system, translating vegetation, snow/ice, and ocean signals into continuous Web Audio textures with musical pitch, timbre, dynamics, and spatial stereo movement.
@@ -62,7 +62,7 @@ This project is released under the [MIT License](LICENSE).
 
 ---
 
-## 📁 Repository Structure
+## Repository Structure
 
 ```text
 ├── index.html                        # High-contrast UI, WAI-ARIA grid, and video stage
