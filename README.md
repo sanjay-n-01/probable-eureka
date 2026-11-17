@@ -65,10 +65,10 @@ This project is released under the [MIT License](LICENSE).
 ## Repository Structure
 
 ```text
-├── index.html                        # High-contrast UI, WAI-ARIA grid, and video stage
-├── jukebox.js                         # Pixel sampler, palette matcher, and Web Audio synthesizer
-├── NDVI_colorbar.png                  # NASA SVS 5544 NDVI reference colorbar
-├── nrt_ndvi_equi_w_dates_2048p30.mp4  # NASA SVS 5544 VIIRS NDVI time-series video
+├── index.html                          # High-contrast UI, WAI-ARIA grid, and video stage
+├── jukebox.js                          # Pixel sampler, palette matcher, and Web Audio synthesizer
+├── NDVI_colorbar.png                   # NASA SVS 5544 NDVI reference color bar
+├── nrt_ndvi_equi_w_dates_2048p30.mp4   # NASA SVS 5544 VIIRS NDVI time-series video
 ├── CONTRIBUTORS.md                     # Contributor names and roles
 ├── LICENSE                             # MIT License
 └── README.md                           # Project documentation
